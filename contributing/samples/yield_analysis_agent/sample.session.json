@@ -1,0 +1,52 @@
+{
+  "title": "Yield Analysis Agent - Sample Session",
+  "turns": [
+    {
+      "role": "user",
+      "input": "Hello, I need to analyze our production yield."
+    },
+    {
+      "role": "agent",
+      "output": "Hello! I can help with that. What specific analysis would you like to perform? For example, I can calculate yield metrics, identify low-yield stages, or suggest improvement actions."
+    },
+    {
+      "role": "user",
+      "input": "Let's start by calculating the yield. We produced 1250 units of Product X, and 75 of them were found to be defective."
+    },
+    {
+      "role": "agent",
+      "tool_code": "calculate_yield_metrics(total_units=1250, defective_units=75)",
+      "tool_result": "{\"yield_rate\": 0.94, \"defect_rate\": 0.06}"
+    },
+    {
+      "role": "agent",
+      "output": "Okay, for Product X, with 1250 total units and 75 defective units, the yield rate is 94.0% and the defect rate is 6.0%."
+    },
+    {
+      "role": "user",
+      "input": "That's helpful. Now, can you help me identify if any stages are performing poorly? Here's the data for our main assembly line. Stage 1: input 1000, output 980. Stage 2: input 980, output 950. Stage 3: input 950, output 880. Stage 4: input 880, output 870. Let's use a yield threshold of 95%."
+    },
+    {
+      "role": "agent",
+      "tool_code": "identify_low_yield_stages(production_data_per_stage=[{'stage_name': 'Stage 1', 'input_units': 1000, 'output_units': 980}, {'stage_name': 'Stage 2', 'input_units': 980, 'output_units': 950}, {'stage_name': 'Stage 3', 'input_units': 950, 'output_units': 880}, {'stage_name': 'Stage 4', 'input_units': 880, 'output_units': 870}], yield_threshold=0.95)",
+      "tool_result": "{\"low_yield_stages\": [{\"stage_name\": \"Stage 3\", \"yield\": 0.9263157894736842, \"input_units\": 950, \"output_units\": 880}]}"
+    },
+    {
+      "role": "agent",
+      "output": "Based on your data and a 95% yield threshold, Stage 3 is underperforming with a yield of approximately 92.63%."
+    },
+    {
+      "role": "user",
+      "input": "Okay, Stage 3 is a concern. We've also noticed a high number of 'misaligned components' and 'incomplete soldering' defects recently. What can we do?"
+    },
+    {
+      "role": "agent",
+      "tool_code": "suggest_improvement_actions(low_yield_stages=[{'stage_name': 'Stage 3', 'yield': 0.9263157894736842}], common_defect_types=['misaligned components', 'incomplete soldering'])",
+      "tool_result": "{\"suggested_actions\": [\"Investigate root causes for low yield at stage: Stage 3.\", \"Implement corrective actions for defect type: misaligned components.\", \"Implement corrective actions for defect type: incomplete soldering.\"]}"
+    },
+    {
+      "role": "agent",
+      "output": "Considering the low yield at Stage 3 and the defect types 'misaligned components' and 'incomplete soldering', I suggest the following actions: \n- Investigate root causes for low yield at Stage 3. \n- Implement corrective actions for the 'misaligned components' defect. \n- Implement corrective actions for the 'incomplete soldering' defect."
+    }
+  ]
+}

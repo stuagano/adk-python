@@ -1,0 +1,3 @@
+# No specific external dependencies for the basic version of this agent.
+# If tools are added that require packages like pandas, numpy, etc.,
+# list them here (e.g., pandas>=1.0.0).
