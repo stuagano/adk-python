@@ -1,3 +1,4 @@
-# No specific external dependencies for the basic version of this agent.
-# If tools are added that require packages like pandas, numpy, etc.,
-# list them here (e.g., pandas>=1.0.0).
+# For data manipulation and reading CSV/Excel files
+pandas>=1.0.0
+# For numerical operations, used in SPC tools
+numpy>=1.20.0

@@ -1,52 +1,164 @@
 {
-  "title": "Yield Analysis Agent - Sample Session",
+  "title": "Yield Analysis Agent - Comprehensive Sample Session",
   "turns": [
     {
       "role": "user",
-      "input": "Hello, I need to analyze our production yield."
+      "input": "Hello, I need to analyze our manufacturing data. I have a CSV file with daily production stats for Product Alpha."
     },
     {
       "role": "agent",
-      "output": "Hello! I can help with that. What specific analysis would you like to perform? For example, I can calculate yield metrics, identify low-yield stages, or suggest improvement actions."
+      "output": "Hello! I can help with that. I can analyze production yield, perform SPC, guide root cause analysis, detect anomalies, identify failure patterns, and more. To start, please provide the path to your CSV file. What are the column names for 'date', 'total_units_produced', and 'defective_units' in your file?"
     },
     {
       "role": "user",
-      "input": "Let's start by calculating the yield. We produced 1250 units of Product X, and 75 of them were found to be defective."
+      "input": "The path is './production_data_alpha.csv'. Columns are 'ProductionDate', 'TotalProduced', 'Defects'. Can you load it and then show me an SPC analysis of the defect counts?"
     },
     {
       "role": "agent",
-      "tool_code": "calculate_yield_metrics(total_units=1250, defective_units=75)",
-      "tool_result": "{\"yield_rate\": 0.94, \"defect_rate\": 0.06}"
+      "tool_code": "read_csv_data(file_path='./production_data_alpha.csv', total_units_col='TotalProduced', defective_units_col='Defects')",
+      "tool_result": "{\"comment\": \"Assuming 'Defects' column can be used as data_points for SPC. This tool primarily extracts total/defective or stage data. For SPC, user needs to confirm which column to use as data_points. For this example, let's imagine it returned a list of defect counts or the agent re-reads just that column for SPC if necessary.\", \"data_for_spc\": [5,6,8,5,7,9,12,10,11,8,6,7,9,10,14,8,7,6,9,10], \"total_units\": 2000, \"defective_units\": 180}"
     },
     {
       "role": "agent",
-      "output": "Okay, for Product X, with 1250 total units and 75 defective units, the yield rate is 94.0% and the defect rate is 6.0%."
+      "output": "Okay, I've notionally processed the data. From what I see, there are 20 daily defect counts: [5,6,8,5,7,9,12,10,11,8,6,7,9,10,14,8,7,6,9,10]. For the SPC analysis of these defect counts, I'll use a default control limit of 3.0 sigma. Would you like to use a different sigma value?"
     },
     {
       "role": "user",
-      "input": "That's helpful. Now, can you help me identify if any stages are performing poorly? Here's the data for our main assembly line. Stage 1: input 1000, output 980. Stage 2: input 980, output 950. Stage 3: input 950, output 880. Stage 4: input 880, output 870. Let's use a yield threshold of 95%."
+      "input": "No, 3.0 sigma is fine."
     },
     {
       "role": "agent",
-      "tool_code": "identify_low_yield_stages(production_data_per_stage=[{'stage_name': 'Stage 1', 'input_units': 1000, 'output_units': 980}, {'stage_name': 'Stage 2', 'input_units': 980, 'output_units': 950}, {'stage_name': 'Stage 3', 'input_units': 950, 'output_units': 880}, {'stage_name': 'Stage 4', 'input_units': 880, 'output_units': 870}], yield_threshold=0.95)",
-      "tool_result": "{\"low_yield_stages\": [{\"stage_name\": \"Stage 3\", \"yield\": 0.9263157894736842, \"input_units\": 950, \"output_units\": 880}]}"
+      "tool_code": "calculate_spc_metrics_and_limits(data_points=[5,6,8,5,7,9,12,10,11,8,6,7,9,10,14,8,7,6,9,10], control_limit_sigma=3.0)",
+      "tool_result": "{\"mean\": 8.7, \"std_dev\": 2.53, \"upper_control_limit\": 16.29, \"lower_control_limit\": 1.11, \"control_limit_sigma\": 3.0, \"data_points_analyzed\": 20}"
     },
     {
       "role": "agent",
-      "output": "Based on your data and a 95% yield threshold, Stage 3 is underperforming with a yield of approximately 92.63%."
+      "output": "For the defect counts, the mean is 8.7, standard deviation is 2.53. The Upper Control Limit (UCL) is 16.29 and the Lower Control Limit (LCL) is 1.11. Now, I'll check for out-of-control points."
+    },
+    {
+      "role": "agent",
+      "tool_code": "identify_out_of_control_points(data_points=[5,6,8,5,7,9,12,10,11,8,6,7,9,10,14,8,7,6,9,10], upper_control_limit=16.29, lower_control_limit=1.11)",
+      "tool_result": "{\"out_of_control_points\": [], \"ucl_used\": 16.29, \"lcl_used\": 1.11, \"data_points_checked\": 20}"
+    },
+    {
+      "role": "agent",
+      "output": "Good news! There are no out-of-control points in this dataset based on the 3-sigma limits. The process appears to be in statistical control regarding daily defect counts. However, there was one day with 14 defects, which is close to the UCL. Would you like to perform a 5 Whys RCA on why that day (index 14) had high defects?"
     },
     {
       "role": "user",
-      "input": "Okay, Stage 3 is a concern. We've also noticed a high number of 'misaligned components' and 'incomplete soldering' defects recently. What can we do?"
+      "input": "Yes, let's do a 5 Whys on 'Day 14 had 14 defects'."
     },
     {
       "role": "agent",
-      "tool_code": "suggest_improvement_actions(low_yield_stages=[{'stage_name': 'Stage 3', 'yield': 0.9263157894736842}], common_defect_types=['misaligned components', 'incomplete soldering'])",
-      "tool_result": "{\"suggested_actions\": [\"Investigate root causes for low yield at stage: Stage 3.\", \"Implement corrective actions for defect type: misaligned components.\", \"Implement corrective actions for defect type: incomplete soldering.\"]}"
+      "tool_code": "guide_root_cause_analysis_5whys(problem_statement='Day 14 had 14 defects (near UCL)', previous_whys=[])",
+      "tool_result": "{\"next_prompt_for_user\": \"Why is 'Day 14 had 14 defects (near UCL)' happening?\", \"current_depth\": 1, \"analysis_summary\": \"Initial Problem: Day 14 had 14 defects (near UCL)\"}"
     },
     {
       "role": "agent",
-      "output": "Considering the low yield at Stage 3 and the defect types 'misaligned components' and 'incomplete soldering', I suggest the following actions: \n- Investigate root causes for low yield at Stage 3. \n- Implement corrective actions for the 'misaligned components' defect. \n- Implement corrective actions for the 'incomplete soldering' defect."
+      "output": "Okay, let's start the 5 Whys. Why is 'Day 14 had 14 defects (near UCL)' happening?"
+    },
+    {
+      "role": "user",
+      "input": "We used a new batch of raw material X on that day."
+    },
+    {
+      "role": "agent",
+      "tool_code": "guide_root_cause_analysis_5whys(problem_statement='Day 14 had 14 defects (near UCL)', previous_whys=[{'why_question': \"Why is 'Day 14 had 14 defects (near UCL)' happening?\", 'user_answer': 'We used a new batch of raw material X on that day.'}])",
+      "tool_result": "{\"next_prompt_for_user\": \"Why did 'We used a new batch of raw material X on that day.' occur?\", \"current_depth\": 2, \"analysis_summary\": \"Initial Problem: Day 14 had 14 defects (near UCL)\\n1. Q: Why is 'Day 14 had 14 defects (near UCL)' happening? A: We used a new batch of raw material X on that day.\"}"
+    },
+    {
+      "role": "agent",
+      "output": "Okay. Why did 'We used a new batch of raw material X on that day.' occur?"
+    },
+    {
+      "role": "user",
+      "input": "Our usual supplier had a stockout, so we sourced from a secondary supplier."
+    },
+    {
+      "role": "agent",
+      "output": "(Agent continues 5 Whys for a few more turns. For brevity, skipping to a point where agent uses knowledge base and suggests actions)"
+    },
+    {
+      "role": "user",
+      "input": "The material from the secondary supplier might have had slightly different impurity levels. Is there anything in the knowledge base about 'impurity' or 'raw material variation'?"
+    },
+    {
+      "role": "agent",
+      "tool_code": "query_knowledge_base(search_keywords=['impurity', 'raw material variation'])",
+      "tool_result": "{\"results\": [{\"id\": \"kb004\", \"keywords\": [\"raw material\", \"variation\", \"impurity\", \"supplier\"], \"problem_summary\": \"Raw Material Variability Issues\", \"possible_causes\": [\"Inconsistent supplier quality\", \"Poor material specification\", \"Degradation during storage\"], \"suggested_solutions\": [\"Implement incoming material inspection\", \"Tighten material specifications with suppliers\", \"Audit secondary suppliers regularly\"]}]}"
+    },
+    {
+      "role": "agent",
+      "output": "Yes, I found an entry in the knowledge base for 'Raw Material Variability Issues'. It suggests solutions like: Implement incoming material inspection, Tighten material specifications with suppliers, and Audit secondary suppliers regularly. Based on this and our RCA, what actions should we consider?"
+    },
+    {
+      "role": "agent",
+      "tool_code": "suggest_improvement_actions(rca_summary='Potential issue with raw material from secondary supplier due to different impurity levels.', common_defect_types=['high defect count on day 14'])",
+      "tool_result": "{\"suggested_actions\": [\"Based on Root Cause Analysis: Address the findings summarized as: 'Potential issue with raw material from secondary supplier due to different impurity levels.'. Develop and implement targeted solutions.\", \"Address common defect type: Implement specific countermeasures for 'high defect count on day 14'.\"]}"
+    },
+    {
+      "role": "agent",
+      "output": "I suggest the following actions: \n- Based on our RCA: Address the potential issue with raw material from the secondary supplier due to different impurity levels. Develop and implement targeted solutions (like incoming inspection for new batches from this supplier). \n- Address the high defect count on day 14 by investigating if other factors were also at play besides the material."
+    },
+    {
+      "role": "user",
+      "input": "Okay, create an action item: 'Implement incoming inspection for raw material from secondary suppliers', assign it to 'QA Team'."
+    },
+    {
+      "role": "agent",
+      "tool_code": "add_action_item(description='Implement incoming inspection for raw material from secondary suppliers', owner='QA Team', status='open')",
+      "tool_result": "{\"success\": true, \"action_item_added\": {\"id\": \"uuid-xyz-123\", \"description\": \"Implement incoming inspection for raw material from secondary suppliers\", \"owner\": \"QA Team\", \"status\": \"open\", \"created_at\": \"timestamp\"}}"
+    },
+    {
+      "role": "agent",
+      "output": "Action item created with ID 'uuid-xyz-123': 'Implement incoming inspection for raw material from secondary suppliers', assigned to 'QA Team', status 'open'. Is there anything else, like analyzing sensor data for anomalies or looking at failure patterns from maintenance logs?"
+    },
+    {
+      "role": "user",
+      "input": "Yes, I have some temperature sensor data for Machine Z: [25,26,25,27,28,26,25,35,26,27]. Anything unusual? Use default parameters for anomaly detection."
+    },
+    {
+      "role": "agent",
+      "tool_code": "detect_simple_anomalies(data_points=[25,26,25,27,28,26,25,35,26,27], window_size=5, std_dev_threshold=2.0)",
+      "tool_result": "{\"anomalies\": [{\"index\": 7, \"value\": 35.0, \"reason\": \"Exceeded rolling upper bound (30.4<seg_74>, mean: 28.2, std: 1.1)\"}], \"parameters_used\": {\"window_size\": 5, \"std_dev_threshold\": 2.0, \"absolute_upper_threshold\": null, \"absolute_lower_threshold\": null, \"data_points_analyzed\": 10}}"
+    },
+    {
+      "role": "agent",
+      "output": "Anomaly detected in Machine Z's temperature data at index 7 with a value of 35.0. This was flagged because it exceeded the rolling upper bound of 30.4 (mean: 28.2, std: 1.1), using a window size of 5 and a 2.0 std dev threshold. This sudden spike might warrant investigation."
+    },
+    {
+      "role": "user",
+      "input": "Interesting. Now, let's look at some maintenance logs for Machine Z. I have a file 'machine_z_events.csv' with 'timestamp', 'event_type', 'item_id' columns."
+    },
+    {
+      "role": "agent",
+      "output": "Okay, I can load that using `read_csv_data` and then analyze it with `identify_simple_failure_patterns`. What is the event type string in your data that indicates a maintenance was completed (e.g., 'maintenance_done', 'PM_completed')?"
+    },
+    {
+      "role": "user",
+      "input": "It's 'PM_completed'."
+    },
+    {
+      "role": "agent",
+      "tool_code": "read_csv_data(file_path='./machine_z_events.csv', stage_name_col=null, input_units_col=null, output_units_col=null) # Simplified for brevity, assuming it returns event list",
+      "tool_result": "{\"production_data_per_stage\": null, \"comment\": \"This tool isn't ideal for generic event lists. Ideally, a dedicated event list reader or a more flexible read_csv_data is used. For this example, assume it returns the required event list format for the next tool.\", \"event_list_for_failure_pattern\": [{\"timestamp\":\"2023-01-10T10:00:00\",\"event_type\":\"motor_overheat\",\"item_id\":\"Machine Z\"}, {\"timestamp\":\"2023-01-10T12:00:00\",\"event_type\":\"PM_completed\",\"item_id\":\"Machine Z\"}, {\"timestamp\":\"2023-02-15T14:00:00\",\"event_type\":\"motor_overheat\",\"item_id\":\"Machine Z\"}, {\"timestamp\":\"2023-02-15T16:00:00\",\"event_type\":\"PM_completed\",\"item_id\":\"Machine Z\"}, {\"timestamp\":\"2023-03-10T09:00:00\",\"event_type\":\"sensor_failure\",\"item_id\":\"Machine Z\"}, {\"timestamp\":\"2023-03-20T11:00:00\",\"event_type\":\"motor_overheat\",\"item_id\":\"Machine Z\"}]}"
+    },
+    {
+      "role": "agent",
+      "tool_code": "identify_simple_failure_patterns(event_data=[{\"timestamp\":\"2023-01-10T10:00:00\",\"event_type\":\"motor_overheat\",\"item_id\":\"Machine Z\"}, {\"timestamp\":\"2023-01-10T12:00:00\",\"event_type\":\"PM_completed\",\"item_id\":\"Machine Z\"}, {\"timestamp\":\"2023-02-15T14:00:00\",\"event_type\":\"motor_overheat\",\"item_id\":\"Machine Z\"}, {\"timestamp\":\"2023-02-15T16:00:00\",\"event_type\":\"PM_completed\",\"item_id\":\"Machine Z\"}, {\"timestamp\":\"2023-03-10T09:00:00\",\"event_type\":\"sensor_failure\",\"item_id\":\"Machine Z\"}, {\"timestamp\":\"2023-03-20T11:00:00\",\"event_type\":\"motor_overheat\",\"item_id\":\"Machine Z\"}], maintenance_completed_event_type='PM_completed')",
+      "tool_result": "{\"identified_patterns\": {\"failure_type_counts\": {\"Machine Z::motor_overheat\": 3, \"Machine Z::sensor_failure\": 1}, \"time_to_failure_after_maintenance_summary\": {\"Machine Z::motor_overheat\": {\"average_hours\": 794.0, \"count\": 2, \"all_hours\": [818.0, 770.0]}}, \"notes\": []}}"
+    },
+     {
+      "role": "agent",
+      "output": "Okay, I've analyzed the events for Machine Z using 'PM_completed' as the maintenance indicator. \nPatterns found: \n- Failure Type Counts: 'motor_overheat' on Machine Z occurred 3 times. 'sensor_failure' on Machine Z occurred 1 time. \n- Time to Failure after Maintenance for 'motor_overheat' on Machine Z: Average time is 794.0 hours, based on 2 instances (818.0 hours and 770.0 hours respectively after a 'PM_completed' event). \nThis suggests the motor overheating is a recurring issue for Machine Z."
+    },
+    {
+      "role": "user",
+      "input": "This has been very helpful. Thank you!"
+    },
+    {
+      "role": "agent",
+      "output": "You're welcome! I'm glad I could assist. Feel free to ask if you have more data to analyze or further questions."
     }
   ]
 }
