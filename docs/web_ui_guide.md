@@ -149,3 +149,45 @@ Before running the deployment command, ensure you have the following:
     *   (If applicable) Access other services like Firestore or Cloud SQL if using `--session_db_url`.
 
 Once deployed, the command will output the URL of your Cloud Run service, which you can use to access your agent's Web UI.
+
+## Using the Interactive Startup Script (`startup.sh`)
+
+To simplify the process of running the ADK Web UI locally or deploying an agent to Google Cloud Run, an interactive shell script named `startup.sh` is provided at the root of the repository. This script guides you through the necessary steps and helps construct the required `adk` commands.
+
+### Making the Script Executable
+
+Before you can run the script, you need to make it executable. Open your terminal, navigate to the root directory of the ADK repository, and run:
+
+```bash
+chmod +x startup.sh
+```
+
+### Running the Script
+
+Once executable, you can run the script with:
+
+```bash
+./startup.sh
+```
+
+### Main Menu Options
+
+The script will present you with a main menu:
+
+1.  **Run ADK Web UI locally:** This option guides you through setting up and running the `adk web` command for local testing.
+2.  **Deploy ADK Agent to Cloud Run (with Web UI):** This option assists in constructing and running the `adk deploy cloud_run` command, including the Web UI.
+3.  **Exit:** Closes the script.
+
+### Guided Prompts
+
+For both local execution and Cloud Run deployment, the script will:
+
+*   Prompt you for necessary information, such as directory paths for your agents (`AGENTS_DIR` or specific `AGENT_PATH`), Google Cloud Project ID, region, desired port numbers, etc.
+*   Provide sensible defaults for some options (e.g., host address `127.0.0.1`, port `8080`).
+*   Validate certain inputs (e.g., ensuring specified directories exist).
+
+### Command Confirmation
+
+A key feature of the `startup.sh` script is that it will display the fully constructed `adk` command based on your inputs *before* executing it. You will then be asked to confirm whether you want to run the displayed command. This allows you to review the command for correctness or copy it for manual use if preferred.
+
+Using `startup.sh` can be a great way to get started with running and deploying your ADK agents without needing to memorize all the command-line arguments immediately.
