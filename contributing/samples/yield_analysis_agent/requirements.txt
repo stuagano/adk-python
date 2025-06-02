@@ -1,0 +1,4 @@
+# For data manipulation and reading CSV/Excel files
+pandas>=1.0.0
+# For numerical operations, used in SPC tools
+numpy>=1.20.0

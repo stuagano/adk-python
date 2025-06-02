@@ -1,0 +1,61 @@
+[
+  {
+    "id": "kb001",
+    "keywords": ["solder", "incomplete", "bridging", "cold joint"],
+    "problem_summary": "Soldering Defects",
+    "possible_causes": [
+      "Incorrect soldering temperature",
+      "Contaminated surfaces",
+      "Oxidation",
+      "Incorrect solder paste application",
+      "Operator error"
+    ],
+    "suggested_solutions": [
+      "Verify and calibrate soldering iron/station temperature.",
+      "Ensure proper cleaning of components and PCBs before soldering.",
+      "Use appropriate flux and check for solder paste expiry/storage.",
+      "Review and improve solder paste stenciling or dispensing process.",
+      "Provide additional training or certification for operators.",
+      "Implement automated optical inspection (AOI) for solder joints."
+    ]
+  },
+  {
+    "id": "kb002",
+    "keywords": ["misaligned", "component", "placement", "offset"],
+    "problem_summary": "Component Misalignment",
+    "possible_causes": [
+      "Incorrect pick-and-place machine calibration",
+      "Worn nozzles or feeders on PnP machine",
+      "Poor quality PCB fiducials",
+      "Component shifting during reflow",
+      "Incorrect component data in PnP program"
+    ],
+    "suggested_solutions": [
+      "Perform regular calibration of the pick-and-place machine.",
+      "Inspect and replace worn machine parts (nozzles, feeders).",
+      "Ensure PCB fiducials are clear and correctly defined.",
+      "Optimize reflow profile to prevent component movement.",
+      "Verify component library and placement data in PnP machine programs.",
+      "Use vision systems for pre-placement and post-placement checks."
+    ]
+  },
+  {
+    "id": "kb003",
+    "keywords": ["calibration", "machine drift", "process parameter"],
+    "problem_summary": "Machine Calibration or Process Drift",
+    "possible_causes": [
+      "Scheduled maintenance overdue",
+      "Environmental changes (temperature, humidity)",
+      "Component wear and tear",
+      "Software glitches",
+      "Power fluctuations"
+    ],
+    "suggested_solutions": [
+      "Adhere to and verify preventive maintenance schedules.",
+      "Monitor and control environmental conditions in the production area.",
+      "Implement condition-based monitoring for critical machine parts.",
+      "Ensure software is up-to-date and stable; check logs for errors.",
+      "Use power conditioning equipment if fluctuations are common."
+    ]
+  }
+]
