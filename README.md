@@ -119,9 +119,11 @@ coordinator = LlmAgent(
 
 ### Development UI
 
-A built-in development UI to help you test, evaluate, debug, and showcase your agent(s).
+The ADK includes a built-in web-based Development UI that allows you to interactively test, evaluate, debug, and showcase your agents. It provides a user-friendly interface for sending messages to your agents and observing their responses and tool usage.
 
 <img src="https://raw.githubusercontent.com/google/adk-python/main/assets/adk-web-dev-ui-function-call.png"/>
+
+For detailed instructions on how to run the Web UI locally or deploy it to Cloud Run, please see the [Web UI Guide](docs/web_ui_guide.md).
 
 ###  Evaluate Agents
 
